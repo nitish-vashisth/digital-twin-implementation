@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Architecture Twin Explorer</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-shell">
+        <header class="header">
+            <div>
+                <div class="title">🏗️ Architecture Twin Explorer</div>
+                <div class="subtitle">Enterprise Jira Data Center dependency intelligence</div>
+            </div>
+            <div class="header-badge">Prototype • Atlassian-style</div>
+        </header>
+
+        <section class="metrics" aria-label="Architecture metrics">
+            <article class="metric-card">
+                <span class="metric-label">Projects</span>
+                <strong id="metricProjects">0</strong>
+            </article>
+            <article class="metric-card">
+                <span class="metric-label">Boards</span>
+                <strong id="metricBoards">0</strong>
+            </article>
+            <article class="metric-card">
+                <span class="metric-label">Filters</span>
+                <strong id="metricFilters">0</strong>
+            </article>
+            <article class="metric-card">
+                <span class="metric-label">Workflows</span>
+                <strong id="metricWorkflows">0</strong>
+            </article>
+            <article class="metric-card">
+                <span class="metric-label">Marketplace Apps</span>
+                <strong id="metricApps">0</strong>
+            </article>
+            <article class="metric-card">
+                <span class="metric-label">Relationships</span>
+                <strong id="metricRelationships">0</strong>
+            </article>
+        </section>
+
+        <main class="workspace">
+            <aside class="sidebar">
+                <section class="sidebar-section">
+                    <h3>Search</h3>
+                    <input type="text" id="search" placeholder="Search project...">
+                </section>
+
+                <section class="sidebar-section">
+                    <h3>Project List</h3>
+                    <ul id="projectList"></ul>
+                </section>
+
+                <section class="sidebar-section">
+                    <h3>Clusters</h3>
+                    <div id="clusterList" class="cluster-list"></div>
+                </section>
+
+                <section class="sidebar-section">
+                    <h3>Legend</h3>
+                    <div class="legend">
+                        <div class="legend-item"><span class="legend-swatch blue"></span>Project</div>
+                        <div class="legend-item"><span class="legend-swatch orange"></span>Workflow</div>
+                        <div class="legend-item"><span class="legend-swatch green"></span>Board</div>
+                        <div class="legend-item"><span class="legend-swatch purple"></span>Filter</div>
+                        <div class="legend-item"><span class="legend-swatch red"></span>Automation</div>
+                        <div class="legend-item"><span class="legend-swatch cyan"></span>Marketplace App</div>
+                        <div class="legend-item"><span class="legend-swatch dark-purple"></span>Permission Scheme</div>
+                    </div>
+                </section>
+            </aside>
+
+            <section class="graph-panel">
+                <div id="clusterCards" class="cluster-cards"></div>
+                <div id="cy"></div>
+            </section>
+
+            <aside class="details">
+                <h2>Selected Node</h2>
+                <div id="detailsPanel">
+                    <p>Select a node to inspect its structure and readiness.</p>
+                </div>
+            </aside>
+        </main>
+    </div>
+
+    <script src="lib/cytoscape.min.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
