@@ -143,6 +143,46 @@ const fallbackEdges = [
     { data: { id: 'e75', source: 'platform', target: 'marketing', label: 'REFERENCES', type: 'REFERENCES' } }
 ];
 
+function normalizeGraphData(nodes, edges) {
+    const normalizeNode = (node) => {
+        const payload = node && node.data ? node.data : node;
+        return {
+            ...node,
+            data: {
+                id: payload.id || payload.ID || node?.id || '',
+                label: payload.label || payload.name || payload.id || '',
+                type: payload.type || node?.type || 'Project',
+                risk: payload.risk || node?.risk || 'Medium',
+                cluster: payload.cluster || node?.cluster || '',
+                summary: payload.summary || payload.description || '',
+                owner: payload.owner || '',
+                cloudReady: payload.cloudReady ?? payload.cloud_ready ?? 0,
+                migrationRecommendation: payload.migrationRecommendation || payload.migration_recommendation || '',
+                relatedObjects: payload.relatedObjects || payload.related_objects || []
+            }
+        };
+    };
+
+    const normalizeEdge = (edge) => {
+        const payload = edge && edge.data ? edge.data : edge;
+        return {
+            ...edge,
+            data: {
+                id: payload.id || edge?.id || '',
+                source: payload.source || edge?.source || '',
+                target: payload.target || edge?.target || '',
+                label: payload.label || edge?.label || 'RELATED',
+                type: payload.type || edge?.type || 'RELATED'
+            }
+        };
+    };
+
+    return {
+        nodes: Array.isArray(nodes) ? nodes.map(normalizeNode) : [],
+        edges: Array.isArray(edges) ? edges.map(normalizeEdge) : []
+    };
+}
+
 async function loadGraph() {
     try {
         const nodesResponse = await fetch('data/nodes.json');
@@ -152,11 +192,12 @@ async function loadGraph() {
             throw new Error('Unable to load static data');
         }
 
-        graphNodes = await nodesResponse.json();
-        graphEdges = await edgesResponse.json();
+        const parsed = normalizeGraphData(await nodesResponse.json(), await edgesResponse.json());
+        graphNodes = parsed.nodes;
+        graphEdges = parsed.edges;
     } catch (error) {
-        graphNodes = fallbackNodes;
-        graphEdges = fallbackEdges;
+        graphNodes = normalizeGraphData(fallbackNodes, fallbackEdges).nodes;
+        graphEdges = normalizeGraphData(fallbackNodes, fallbackEdges).edges;
     }
 
     initialiseGraph(graphNodes, graphEdges);
@@ -164,7 +205,7 @@ async function loadGraph() {
     renderProjectList(graphNodes);
     renderClusterCards(graphNodes);
     renderClusterList(graphNodes);
-    selectNode('payments');
+    focusNode('payments');
 }
 
 function initialiseGraph(nodes, edges) {
